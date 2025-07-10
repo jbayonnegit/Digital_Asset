@@ -9,29 +9,35 @@ error TransferFailed();
 
 contract MyToken { 
 
-    address private _owner;
-    ERC20   public Token;
+	address private _owner;
+	ERC20   public Token;
 
-    constructor (){
+	constructor (){
 
-        Token = new ERC20( "DNO", "DINEO" );
-        _owner = msg.sender;
-    }
+		Token = new ERC20( );
+		_owner = msg.sender;
+	}
 
-    function _mint( address to, uint256 _amount )  public {
-        Token.mint( to, _amount );
-    }
+	function _mint( address to, uint256 _amount )  public {
+		Token.mint( to, _amount );
+	}
 
-    function _balanceOf( address to ) external view returns ( uint256 ) {
-        return ( Token.balanceOf( to ) );
-    }
+	function _balanceOf( address to ) external view returns ( uint256 ) {
+		return ( Token.balanceOf( to ) );
+	}
 
-    function _transfer( address to, uint256 amount ) external returns ( bool ) {
-       Token.transfer(to, amount);
-    }
-    // modifier OnlyOwner {
-    //     if ( msg.sender != _owner )
-    //         revert NotOwner();
-    //     _;
-    // }
+	function _transfer( address to, uint256 amount ) external returns ( bool ) {
+	   Token.transfer(to, amount);
+	   return (true);
+	}
+
+	function _getAddress() external view returns ( address ){
+		return ( Token.getAddress() );
+	}
+
+	// modifier OnlyOwner {
+	//     if ( msg.sender != _owner )
+	//         revert NotOwner();
+	//     _;
+	// }
 }

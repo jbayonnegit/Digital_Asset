@@ -3,6 +3,9 @@
 pragma solidity 0.8.30;
 import { IERC20 } from "chainlink-brownie-contracts/contracts/src/v0.8/vendor/openzeppelin-solidity/v4.8.3/contracts/token/ERC20/IERC20.sol";
 
+error AmountExceedsBalance();
+error AmountExceedsAllowance();
+
 contract ERC20 is IERC20{
 
 	string private												SYMBOLE;
@@ -11,11 +14,11 @@ contract ERC20 is IERC20{
 	mapping( address => uint256 ) private						_balance;
 	mapping( address => mapping( address => uint256 )) private 	_allowance;
 	
-	constructor( string memory _symbole , string memory _name ){
+	constructor( ){
 
 		_totalSupply = 0;
-		SYMBOLE = _symbole;
-		NAME = _name;
+		SYMBOLE = "NI";
+		NAME = "NINHOCOIN";
 	}
 
 	function balanceOf( address _wallet ) external view returns ( uint256 success ){
@@ -24,8 +27,8 @@ contract ERC20 is IERC20{
 
 	function transfer( address to, uint256 amount ) public returns ( bool success ){
 
-		if ( _balance[ msg.sender ] < amount || msg.sender == to )
-			return ( false );
+		if ( _balance[ msg.sender ] < amount)
+			revert AmountExceedsBalance();
 		_balance[ to ] += amount;
 		_balance[ msg.sender ] -= amount;
 		emit Transfer( msg.sender, to , amount );
@@ -34,9 +37,8 @@ contract ERC20 is IERC20{
 
 	function transferFrom( address from, address to, uint256 _amount ) public returns ( bool success ){
 
-		if ( allowance( from, msg.sender ) < _amount ){
-			return ( false );
-		}
+		if ( allowance( from, msg.sender ) < _amount )
+			revert AmountExceedsAllowance();
 		_balance[ from ] -= _amount;
 		_allowance[ from ][ msg.sender ] -= _amount;
 		_balance[ to ] += _amount;
@@ -69,4 +71,8 @@ contract ERC20 is IERC20{
 		_totalSupply += amount;
 		return ( true );
 	}
+
+	function getAddress() external view returns ( address ){
+       	return ( msg.sender );
+    }
 }
