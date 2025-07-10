@@ -86,6 +86,31 @@ contract MyTokenTest is Test{
 	}
 
 	function testAllowance() public{
+
+		_token.mint( USER, 20 );
+		vm.startPrank( USER );
+		_token.approve( tmp , 10);
+		vm.stopPrank();
+
+		_token.transferFrom(USER, USER1, 6);
+		_token.transferFrom(USER, USER1, 1);
+		console.log( "allowance remaining", _token.allowance( USER , tmp ));
+		_token.transferFrom(USER, USER1, 1);
+		_token.transferFrom(USER, USER1, 1);
+		console.log( "allowance remaining", _token.allowance( USER , tmp ));
+		_token.transferFrom(USER, USER1, 1);
+		console.log( "allowance remaining", _token.allowance( USER , tmp ));
 		
+		vm.startPrank( USER );
+		_token.approve( USER1 , 10);
+		vm.stopPrank();
+
+		vm.startPrank( USER1 );
+		_token.transferFrom(USER, tmp, 10);
+		vm.stopPrank();
+
+		console.log("USER balance :", _token.balanceOf( USER ));
+		console.log("USER1 balance :", _token.balanceOf( USER1 ));
+		console.log("tmp balance :", _token.balanceOf( tmp ));
 	}
 }
